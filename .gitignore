@@ -1,0 +1,24 @@
+# General
+.DS_Store
+*.log
+
+# Spring Boot / Java (Backend)
+backend/target/
+backend/build/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+*.class
+*.jar
+*.war
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Terraform (Infraestructura)
+infrastructure/.terraform/
+infrastructure/*.tfstate
+infrastructure/*.tfstate.backup
+infrastructure/.terraform.tfstate.lock.info
