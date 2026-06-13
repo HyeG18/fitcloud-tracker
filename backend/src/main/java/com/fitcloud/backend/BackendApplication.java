@@ -17,4 +17,6 @@ public class BackendApplication {
 	public String healthCheck() {
 		return "¡El backend de FitCloud Tracker está vivo en Java " + System.getProperty("java.version") + "!";
 	}
+
+	//Hola Actions
 }
