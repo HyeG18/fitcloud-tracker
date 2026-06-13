@@ -1,36 +1,31 @@
 name: Backend CI
 
-# ¿Cuándo se ejecutará esto? Cuando hagamos un 'push' a la rama 'main'
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "ci-cd", "develop" ] # <-- Añadidas tus ramas de trabajo
     paths:
-      - 'backend/**' # Solo se ejecuta si hay cambios dentro de la carpeta del backend
+      - 'backend/**'
 
 jobs:
   build-and-test:
     name: Build Spring Boot and Docker Image
-    runs-on: ubuntu-latest # GitHub nos presta una máquina virtual con Ubuntu
+    runs-on: ubuntu-latest
 
     steps:
-      # 1. Clona nuestro código en la máquina de GitHub
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      # 2. Prepara el entorno con Java
       - name: Configurar JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '21' # ¡OJO AQUÍ! Cambia este número por tu versión real
+          java-version: '21'
           distribution: 'temurin'
-          cache: maven # Guarda las dependencias en caché para que las próximas veces sea más rápido
+          cache: maven
 
-      # 3. Compila el proyecto y genera el .jar
       - name: Compilar con Maven
         working-directory: ./backend
         run: mvn clean package -DskipTests
 
-      # 4. Verifica que el Dockerfile funciona y compila la imagen
       - name: Construir imagen de Docker
         working-directory: ./backend
         run: docker build -t fitcloud-backend:latest .
