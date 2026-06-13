@@ -6,6 +6,9 @@ WORKDIR /app
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
 
+# Dar permisos de ejecución al Maven Wrapper (¡Aquí está el cambio!)
+RUN chmod +x mvnw
+
 # Descargar las dependencias de forma separada para aprovechar la caché de Docker
 RUN ./mvnw dependency:go-offline -B
 
