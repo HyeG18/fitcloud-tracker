@@ -2,7 +2,7 @@ name: Backend CI
 
 on:
   push:
-    branches: [ "main", "ci-cd", "develop" ] # <-- Añadidas tus ramas de trabajo
+    branches: [ "main", "ci-cd", "develop" ]
     paths:
       - 'backend/**'
 
@@ -10,6 +10,11 @@ jobs:
   build-and-test:
     name: Build Spring Boot and Docker Image
     runs-on: ubuntu-latest
+    
+    # 1. Agregamos permisos explícitos para que el GITHUB_TOKEN pueda subir paquetes (packages)
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout del código
@@ -22,10 +27,29 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      # Nota: Como tu Dockerfile ya hace un "multi-stage build" y compila el código adentro, 
+      # este paso compila el jar en el runner por si necesitas validar errores rápido.
+      # Lo mantenemos tal como lo tenías.
       - name: Compilar con Maven
         working-directory: ./backend
         run: mvn clean package -DskipTests
 
-      - name: Construir imagen de Docker
-        working-directory: ./backend
-        run: docker build -t fitcloud-backend:latest .
+      # 2. Iniciamos sesión en GitHub Container Registry de forma automática
+      - name: Iniciar sesión en GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 3. Construimos la imagen usando tu Dockerfile y la subimos directamente a GHCR
+      # Usamos tu usuario y repositorio exactos en minúsculas para evitar errores con las reglas de Docker
+      - name: Construir y subir imagen de Docker a GHCR
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/hyeg18/fitcloud-tracker/backend:latest
+            ghcr.io/hyeg18/fitcloud-tracker/backend:${{ github.sha }}

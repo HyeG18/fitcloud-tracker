@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  fitcloud-db:
+    image: postgres:16-alpine
+    container_name: fitcloud-postgres
+    environment:
+      POSTGRES_DB: fitcloud_db
+      POSTGRES_USER: fitcloud_user
+      POSTGRES_PASSWORD: fitcloud_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fitcloud-network
+
+  fitcloud-backend:
+    image: ghcr.io/hyeg18/fitcloud-tracker/backend:latest
+    container_name: fitcloud-backend-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://fitcloud-db:5432/fitcloud_db
+      SPRING_DATASOURCE_USERNAME: fitcloud_user
+      SPRING_DATASOURCE_PASSWORD: fitcloud_password
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - fitcloud-db
+    networks:
+      - fitcloud-network
+
+volumes:
+  postgres_data:
+
+networks:
+  fitcloud-network:
+    driver: bridge
