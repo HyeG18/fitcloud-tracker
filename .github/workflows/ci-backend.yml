@@ -5,6 +5,7 @@ on:
     branches: [ "main", "ci-cd", "develop" ]
     paths:
       - 'backend/**'
+      - '.github/workflows/**'
 
 jobs:
   build-and-test:
