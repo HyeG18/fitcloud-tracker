@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Servicio 1: Base de Datos Real (PostgreSQL)
+  fitcloud-db:
+    image: postgres:16-alpine
+    container_name: fitcloud-postgres
+    environment:
+      POSTGRES_DB: fitcloud_db
+      POSTGRES_USER: fitcloud_user
+      POSTGRES_PASSWORD: fitcloud_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fitcloud-network
+
+  # Servicio 2: Tu Backend de Spring Boot
+  fitcloud-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fitcloud-backend-app
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://fitcloud-db:5432/fitcloud_db
+      SPRING_DATASOURCE_USERNAME: fitcloud_user
+      SPRING_DATASOURCE_PASSWORD: fitcloud_password
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - fitcloud-db
+    networks:
+      - fitcloud-network
+
+  # Servicio 3: El Frontend (Dejado listo para tu compañero)
+  # fitcloud-frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5173:5173"
+
+volumes:
+  postgres_data:
+
+networks:
+  fitcloud-network:
+    driver: bridge
