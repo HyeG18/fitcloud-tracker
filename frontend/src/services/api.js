@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -18,7 +18,6 @@ export const createActividad = async (actividad) => {
 };
 
 export const getUsuario = async (id = 1) => {
-  // Using a default ID of 1 for now, as auth is not specified
   const response = await api.get(`/usuarios/${id}`);
   return response.data;
 };
