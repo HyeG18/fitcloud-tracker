@@ -32,8 +32,12 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  const totalKm = activities.reduce((sum, act) => sum + (act.distanciaKm || 0), 0).toFixed(1);
-  const totalMin = activities.reduce((sum, act) => sum + (act.duracionMin || 0), 0);
+  const totalKm = activities
+  .reduce((sum, act) => sum + Number(act.distanciakm ?? act.distanciaKm ?? 0), 0)
+  .toFixed(1);
+
+const totalMin = activities
+  .reduce((sum, act) => sum + Number(act.duracionmin ?? act.duracionMin ?? 0), 0);
 
   return (
     <div className="dashboard-container container animate-fade-in">
@@ -86,9 +90,9 @@ const Dashboard = () => {
               <div key={act.id || Math.random()} className="activity-card">
                 <div className="activity-type">{act.tipo}</div>
                 <div className="activity-details">
-                  <span>{act.distanciaKm} km</span>
+                  <span>{act.distanciakm ?? act.distanciaKm} km</span>
                   <span className="dot">•</span>
-                  <span>{act.duracionMin} min</span>
+                  <span>{act.duracionmin ?? act.duracionMin} min</span>
                 </div>
                 <div className="activity-date">
                   {new Date(act.fecha || Date.now()).toLocaleDateString('es-ES', {

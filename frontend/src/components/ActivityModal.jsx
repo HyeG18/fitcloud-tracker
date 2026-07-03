@@ -26,7 +26,7 @@ const ActivityModal = ({ onClose, onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.distanciaKm || !formData.duracionMin) {
+    if (!formData.distanciaKm || !formData.duracionMin || !formData.fecha) {
       setError('Por favor, completa todos los campos requeridos.');
       return;
     }
@@ -36,14 +36,16 @@ const ActivityModal = ({ onClose, onSuccess }) => {
       setError(null);
 
       await createActividad({
-        ...formData,
+        tipo: formData.tipo,
         distanciaKm: parseFloat(formData.distanciaKm),
         duracionMin: parseInt(formData.duracionMin, 10),
-        usuario_id: 1
+        fecha: formData.fecha,
+        usuarioId: 1
       });
 
       onSuccess();
     } catch (err) {
+      console.error('Error al guardar actividad:', err);
       setError('Ocurrió un error al guardar la actividad.');
     } finally {
       setLoading(false);
@@ -66,7 +68,9 @@ const ActivityModal = ({ onClose, onSuccess }) => {
             <label>Tipo de ejercicio</label>
             <select
               value={formData.tipo}
-              onChange={(e) => setFormData({ ...formData, tipo: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, tipo: e.target.value })
+              }
             >
               <option value="Trote">Trote</option>
               <option value="Ciclismo">Ciclismo</option>
@@ -85,7 +89,9 @@ const ActivityModal = ({ onClose, onSuccess }) => {
                 min="0"
                 placeholder="Ej. 5.5"
                 value={formData.distanciaKm}
-                onChange={(e) => setFormData({ ...formData, distanciaKm: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, distanciaKm: e.target.value })
+                }
               />
             </div>
 
@@ -96,7 +102,9 @@ const ActivityModal = ({ onClose, onSuccess }) => {
                 min="1"
                 placeholder="Ej. 45"
                 value={formData.duracionMin}
-                onChange={(e) => setFormData({ ...formData, duracionMin: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, duracionMin: e.target.value })
+                }
               />
             </div>
           </div>
@@ -106,7 +114,9 @@ const ActivityModal = ({ onClose, onSuccess }) => {
             <input
               type="datetime-local"
               value={formData.fecha}
-              onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, fecha: e.target.value })
+              }
             />
           </div>
 
