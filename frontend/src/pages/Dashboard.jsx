@@ -44,7 +44,7 @@ const totalMin = activities
       <div className="dashboard-header">
         <div>
           <h1 className="greeting">Hola, {user?.nombre || 'Deportista'}</h1>
-          <p className="subtitle">Aquí está el resumen de tu progreso. Con CI</p>
+          <p className="subtitle">Aquí está el resumen de tu progreso.</p>
         </div>
         <button className="primary-btn" onClick={() => setIsModalOpen(true)}>
           <Plus size={20} />
